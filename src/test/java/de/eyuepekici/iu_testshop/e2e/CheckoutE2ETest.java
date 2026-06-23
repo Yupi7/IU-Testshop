@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -38,29 +37,29 @@ class CheckoutE2ETest {
 
         driver.get("http://localhost:" + port + "/products");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("keyword")))
-                .sendKeys("Laptop");
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[contains(text(),'In den Warenkorb')]")
+        )).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".search-box button")))
-                .click();
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.linkText("Zum Warenkorb →")
+        )).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".product-card button")))
-                .click();
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[contains(text(),'Zur Zahlung')]")
+        )).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Zum Warenkorb →")))
-                .click();
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("input[value='PAYPAL']")
+        )).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("form[action='/payment'] button")))
-                .click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.name("paypalEmail")
+        )).sendKeys("kunde@example.com");
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input[value='PAYPAL']")))
-                .click();
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("paypalEmail")))
-                .sendKeys("kunde@example.com");
-
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("form[action='/payment/confirm'] button")))
-                .click();
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[contains(text(),'Zahlung bestätigen')]")
+        )).click();
 
         wait.until(ExpectedConditions.textToBePresentInElementLocated(
                 By.tagName("body"),
