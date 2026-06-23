@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>IU-Testshop | Bestellungen</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>IU-Testshop</h1>
+    <nav>
+        <a href="/">Start</a>
+        <a href="/products">Produkte</a>
+        <a href="/cart">Warenkorb</a>
+        <a href="/orders">Bestellungen</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <h2>Bestellübersicht</h2>
+        <p>Hier werden abgeschlossene Bestellungen mit Datum, Produkten, Zahlungsart, Status und Gesamtbetrag angezeigt.</p>
+    </section>
+
+    <section class="orders-list">
+
+        <article class="order-card" th:each="order : ${orders}">
+            <div class="order-header">
+                <div>
+                    <h3 th:text="'Bestellung #' + ${order.id}">Bestellung #1</h3>
+                    <p th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}">23.06.2026 21:29</p>
+                </div>
+
+                <span class="status-badge" th:text="${order.status}">Bestellung eingegangen</span>
+            </div>
+
+            <div class="order-details">
+                <div>
+                    <strong>Produkte</strong>
+                    <p th:text="${order.products}">1x Laptop</p>
+                </div>
+
+                <div>
+                    <strong>Zahlungsart</strong>
+                    <p th:text="${order.paymentMethod}">PAYPAL</p>
+                </div>
+
+                <div>
+                    <strong>Gesamtbetrag</strong>
+                    <p th:text="${order.totalPrice + ' €'}">999.99 €</p>
+                </div>
+            </div>
+        </article>
+
+        <section class="hero" th:if="${orders.isEmpty()}">
+            <p>Es wurden noch keine Bestellungen abgeschlossen.</p>
+        </section>
+
+    </section>
+
+</main>
+
+</body>
+</html>

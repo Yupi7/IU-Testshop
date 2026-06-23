@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>IU-Testshop | Zahlung</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>IU-Testshop</h1>
+    <nav>
+        <a href="/">Start</a>
+        <a href="/products">Produkte</a>
+        <a href="/cart">Warenkorb</a>
+        <a href="/orders">Bestellungen</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <h2>Zahlung</h2>
+        <p>Bitte wählen Sie eine Zahlungsmethode aus.</p>
+        <h3>Gesamtsumme: <span th:text="${totalPrice + ' €'}">0.00 €</span></h3>
+    </section>
+
+    <section class="hero">
+        <form method="post" action="/payment/confirm">
+
+            <label>
+                <input type="radio" name="paymentMethod" value="KREDITKARTE" required onclick="showPaymentFields('card')">
+                Kreditkarte
+            </label>
+            <br><br>
+
+            <label>
+                <input type="radio" name="paymentMethod" value="PAYPAL" onclick="showPaymentFields('paypal')">
+                PayPal
+            </label>
+            <br><br>
+
+            <label>
+                <input type="radio" name="paymentMethod" value="RECHNUNG" onclick="showPaymentFields('invoice')">
+                Kauf auf Rechnung
+            </label>
+
+            <div id="cardFields" class="payment-fields">
+                <h3>Kreditkartendaten</h3>
+
+                <label>Karteninhaber</label>
+                <input type="text" name="cardHolder" placeholder="Max Mustermann">
+
+                <label>Kartennummer</label>
+                <input type="text" name="cardNumber" placeholder="4111 1111 1111 1111">
+            </div>
+
+            <div id="paypalFields" class="payment-fields">
+                <h3>PayPal-Daten</h3>
+
+                <label>PayPal-E-Mail</label>
+                <input type="email" name="paypalEmail" placeholder="kunde@example.com">
+            </div>
+
+            <div id="invoiceFields" class="payment-fields">
+                <h3>Rechnungsadresse</h3>
+
+                <label>Name</label>
+                <input type="text" name="invoiceName" placeholder="Max Mustermann">
+
+                <label>Adresse</label>
+                <input type="text" name="invoiceAddress" placeholder="Musterstraße 1, 12345 Musterstadt">
+            </div>
+
+            <br>
+            <button type="submit">Zahlung bestätigen</button>
+        </form>
+    </section>
+
+</main>
+
+<script>
+    function showPaymentFields(type) {
+        document.getElementById("cardFields").style.display = "none";
+        document.getElementById("paypalFields").style.display = "none";
+        document.getElementById("invoiceFields").style.display = "none";
+
+        if (type === "card") {
+            document.getElementById("cardFields").style.display = "block";
+        }
+
+        if (type === "paypal") {
+            document.getElementById("paypalFields").style.display = "block";
+        }
+
+        if (type === "invoice") {
+            document.getElementById("invoiceFields").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

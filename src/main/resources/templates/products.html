@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>IU-Testshop | Produktkatalog</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>IU-Testshop</h1>
+    <nav>
+        <a href="/">Start</a>
+        <a href="/products">Produkte</a>
+        <a href="/cart">Warenkorb</a>
+        <a href="/orders">Bestellungen</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <h2>Produktkatalog</h2>
+        <p>Wähle Produkte aus und lege sie in den Warenkorb.</p>
+
+        <div class="success" th:if="${param.added}">
+            <span>Produkt wurde zum Warenkorb hinzugefügt.</span>
+            <a class="success-link" href="/cart">Zum Warenkorb →</a>
+        </div>
+    </section>
+
+    <form class="search-box" method="get" action="/products">
+        <input
+                type="text"
+                name="keyword"
+                placeholder="Produkt suchen..."
+                th:value="${keyword}">
+        <button type="submit">Suchen</button>
+    </form>
+
+    <p th:if="${products.isEmpty()}">
+        Keine Produkte gefunden.
+    </p>
+
+    <section class="product-grid">
+        <article class="product-card" th:each="product : ${products}">
+            <h3 th:text="${product.name}">Produktname</h3>
+            <p th:text="${product.description}">Beschreibung</p>
+            <strong th:text="${product.price + ' €'}">0.00 €</strong>
+
+            <form method="post" th:action="@{/cart/add/{id}(id=${product.id})}">
+                <button type="submit">In den Warenkorb</button>
+            </form>
+        </article>
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>IU-Testshop | Warenkorb</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>IU-Testshop</h1>
+    <nav>
+        <a href="/">Start</a>
+        <a href="/products">Produkte</a>
+        <a href="/cart">Warenkorb</a>
+        <a href="/orders">Bestellungen</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <h2>Warenkorb</h2>
+        <p>Hier befinden sich die ausgewählten Produkte.</p>
+    </section>
+
+    <section class="product-grid" th:if="${!items.isEmpty()}">
+        <article class="product-card" th:each="item : ${items}">
+            <h3 th:text="${item.product.name}">Produktname</h3>
+            <p>
+                Menge:
+                <span th:text="${item.quantity}">1</span>
+            </p>
+            <strong th:text="${item.totalPrice + ' €'}">0.00 €</strong>
+
+            <form method="post" th:action="@{/cart/remove/{id}(id=${item.product.id})}">
+                <button type="submit">Entfernen</button>
+            </form>
+        </article>
+    </section>
+
+    <section class="hero" th:if="${items.isEmpty()}">
+        <p>Der Warenkorb ist leer.</p>
+        <a href="/products">Zurück zum Produktkatalog</a>
+    </section>
+
+    <section class="hero" th:if="${!items.isEmpty()}">
+        <h3>Gesamtsumme: <span th:text="${totalPrice + ' €'}">0.00 €</span></h3>
+
+        <form method="get" action="/payment">
+            <button type="submit">Zur Zahlung</button>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>
