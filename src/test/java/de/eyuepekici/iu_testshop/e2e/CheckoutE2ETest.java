@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -37,47 +38,34 @@ class CheckoutE2ETest {
 
         driver.get("http://localhost:" + port + "/products");
 
-        WebElement searchInput = wait.until(
-                d -> d.findElement(By.name("keyword"))
-        );
-        searchInput.sendKeys("Laptop");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("keyword")))
+                .sendKeys("Laptop");
 
-        WebElement searchButton = driver.findElement(
-                By.cssSelector(".search-box button")
-        );
-        searchButton.click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".search-box button")))
+                .click();
 
-        WebElement addToCartButton = wait.until(
-                d -> d.findElement(By.cssSelector(".product-card button"))
-        );
-        addToCartButton.click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".product-card button")))
+                .click();
 
-        WebElement cartLink = wait.until(
-                d -> d.findElement(By.linkText("Zum Warenkorb →"))
-        );
-        cartLink.click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Zum Warenkorb →")))
+                .click();
 
-        WebElement paymentButton = wait.until(
-                d -> d.findElement(By.cssSelector("form[action='/payment'] button"))
-        );
-        paymentButton.click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("form[action='/payment'] button")))
+                .click();
 
-        WebElement paypalOption = wait.until(
-                d -> d.findElement(By.cssSelector("input[value='PAYPAL']"))
-        );
-        paypalOption.click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input[value='PAYPAL']")))
+                .click();
 
-        WebElement paypalEmail = wait.until(
-                d -> d.findElement(By.name("paypalEmail"))
-        );
-        paypalEmail.sendKeys("kunde@example.com");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("paypalEmail")))
+                .sendKeys("kunde@example.com");
 
-        WebElement confirmButton = driver.findElement(
-                By.cssSelector("form[action='/payment/confirm'] button")
-        );
-        confirmButton.click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("form[action='/payment/confirm'] button")))
+                .click();
 
-        wait.until(d -> d.getPageSource().contains("Bestellung erfolgreich"));
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(
+                By.tagName("body"),
+                "Bestellung erfolgreich"
+        ));
 
         assertTrue(driver.getPageSource().contains("Bestellung erfolgreich"));
     }
