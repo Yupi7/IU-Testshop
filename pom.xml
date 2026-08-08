@@ -183,6 +183,13 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- SonarQube Cloud static code analysis. Project identity and token are supplied by CI. -->
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>5.5.0.6356</version>
+			</plugin>
 		</plugins>
 	</build>
 
