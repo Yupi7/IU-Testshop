@@ -6,11 +6,14 @@ import de.eyuepekici.iu_testshop.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+
+    private static final ZoneId ORDER_TIME_ZONE = ZoneId.of("Europe/Berlin");
 
     private final OrderRepository orderRepository;
 
@@ -29,7 +32,7 @@ public class OrderService {
                 paymentMethod,
                 "Bestellung eingegangen",
                 totalPrice,
-                LocalDateTime.now()
+                LocalDateTime.now(ORDER_TIME_ZONE)
         );
 
         return orderRepository.save(order);
