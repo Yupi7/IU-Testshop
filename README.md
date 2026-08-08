@@ -44,4 +44,4 @@ Die Anwendung dient zur Demonstration verschiedener Testverfahren im DevOps-Umfe
 
 ## Projektziel
 
-Ziel des Projekts ist die Demonstration einer automatisierten Teststrategie für eine Webanwendung gemäß den Anforderungen der Fallstudie im Modul DevOps und Continuous Delivery.
+Ziel des Projekts ist die Demonstration einer automatisierten Teststrategie für eine Webanwendung, gemäß den Anforderungen der Fallstudie im Modul DevOps und Continuous Delivery.
