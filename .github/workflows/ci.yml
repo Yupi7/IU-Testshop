@@ -120,7 +120,22 @@ jobs:
       - name: Show Chrome version
         run: google-chrome --version
 
-      - name: Run Selenium E2E test
+      - name: Wait for Railway staging health
+        run: |
+          for i in {1..30}; do
+            if curl --fail --silent https://iu-testshop-production.up.railway.app/actuator/health | grep '"status":"UP"'; then
+              echo "Railway staging is healthy."
+              exit 0
+            fi
+            echo "Waiting for Railway staging..."
+            sleep 10
+          done
+          echo "Railway staging did not become healthy."
+          exit 1
+
+      - name: Run Selenium E2E test against Railway staging
+        env:
+          E2E_BASE_URL: https://iu-testshop-production.up.railway.app
         run: ./mvnw -B -Dtest=CheckoutE2ETest test
 
       - name: Upload E2E test reports
