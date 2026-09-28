@@ -1,8 +1,16 @@
+FROM eclipse-temurin:21-jdk AS build
+
+WORKDIR /workspace
+
+COPY . .
+
+RUN chmod +x mvnw && ./mvnw -B -DskipTests package
+
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-COPY target/iu-testshop-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /workspace/target/iu-testshop-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
