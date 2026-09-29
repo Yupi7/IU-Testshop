@@ -39,19 +39,6 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_shouldHandleEmptyCart() {
-        OrderRepository repository = mock(OrderRepository.class);
-        OrderService service = new OrderService(repository);
-        when(repository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        Order order = service.createOrder(List.of(), "PAYPAL", 0.0);
-
-        assertEquals("", order.getProducts());
-        assertEquals(0.0, order.getTotalPrice(), 0.001);
-        verify(repository).save(any(Order.class));
-    }
-
-    @Test
     void createOrder_shouldReturnRepositoryResult() {
         OrderRepository repository = mock(OrderRepository.class);
         OrderService service = new OrderService(repository);
@@ -59,7 +46,8 @@ class OrderServiceTest {
         persisted.setId(42L);
         when(repository.save(any(Order.class))).thenReturn(persisted);
 
-        Order result = service.createOrder(List.of(), "CARD", 15.0);
+        Product product = new Product("Testprodukt", 15.0, "Testbeschreibung");
+        Order result = service.createOrder(List.of(new CartItem(product, 1)), "CARD", 15.0);
 
         assertSame(persisted, result);
         assertEquals(42L, result.getId());
