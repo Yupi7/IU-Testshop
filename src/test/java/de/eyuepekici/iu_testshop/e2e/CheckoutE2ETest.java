@@ -27,6 +27,25 @@ class CheckoutE2ETest {
         }
     }
 
+
+    @Test
+    void emptyCartCannotOpenPaymentPage() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--window-size=1920,1080");
+
+        driver = new ChromeDriver(options);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        driver.get(BASE_URL + "/payment");
+
+        wait.until(ExpectedConditions.urlContains("/cart"));
+
+        assertTrue(driver.getCurrentUrl().contains("/cart"));
+    }
+
     @Test
     void userCanCompleteOrderWithPaypal() {
         ChromeOptions options = new ChromeOptions();
