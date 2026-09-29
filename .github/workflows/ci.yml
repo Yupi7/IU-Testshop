@@ -76,6 +76,8 @@ jobs:
           -Dsonar.projectKey=${SONAR_PROJECT_KEY}
           -Dsonar.sources=src/main/java,src/main/resources
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          -Dsonar.qualitygate.wait=true
+          -Dsonar.qualitygate.timeout=300
 
       - name: Upload integration test reports
         if: always()
