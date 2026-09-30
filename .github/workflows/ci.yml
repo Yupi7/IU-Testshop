@@ -9,7 +9,7 @@ on:
 
 env:
   JAVA_VERSION: "21"
-  COVERAGE_MINIMUM: "0.40"
+  COVERAGE_MINIMUM: "0.70"
   SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
   SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -76,6 +76,8 @@ jobs:
           -Dsonar.projectKey=${SONAR_PROJECT_KEY}
           -Dsonar.sources=src/main/java,src/main/resources
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          -Dsonar.qualitygate.wait=true
+          -Dsonar.qualitygate.timeout=300
 
       - name: Upload integration test reports
         if: always()
@@ -120,7 +122,22 @@ jobs:
       - name: Show Chrome version
         run: google-chrome --version
 
-      - name: Run Selenium E2E test
+      - name: Wait for Railway staging health
+        run: |
+          for i in {1..30}; do
+            if curl --fail --silent https://iu-testshop-staging.up.railway.app/actuator/health | grep '"status":"UP"'; then
+              echo "Railway staging is healthy."
+              exit 0
+            fi
+            echo "Waiting for Railway staging..."
+            sleep 10
+          done
+          echo "Railway staging did not become healthy."
+          exit 1
+
+      - name: Run Selenium E2E test against Railway staging
+        env:
+          E2E_BASE_URL: https://iu-testshop-staging.up.railway.app
         run: ./mvnw -B -Dtest=CheckoutE2ETest test
 
       - name: Upload E2E test reports

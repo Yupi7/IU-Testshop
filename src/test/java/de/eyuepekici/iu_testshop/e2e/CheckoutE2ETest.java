@@ -8,18 +8,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CheckoutE2ETest {
 
-    @LocalServerPort
-    private int port;
+    private static final String BASE_URL =
+            System.getenv().getOrDefault("E2E_BASE_URL", "http://localhost:8080");
 
     private WebDriver driver;
 
@@ -28,6 +25,25 @@ class CheckoutE2ETest {
         if (driver != null) {
             driver.quit();
         }
+    }
+
+
+    @Test
+    void emptyCartCannotOpenPaymentPage() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--window-size=1920,1080");
+
+        driver = new ChromeDriver(options);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        driver.get(BASE_URL + "/payment");
+
+        wait.until(ExpectedConditions.urlContains("/cart"));
+
+        assertTrue(driver.getCurrentUrl().contains("/cart"));
     }
 
     @Test
@@ -39,10 +55,9 @@ class CheckoutE2ETest {
         options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
-
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.get("http://localhost:" + port + "/products");
+        driver.get(BASE_URL + "/products");
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[contains(text(),'In den Warenkorb')]")
