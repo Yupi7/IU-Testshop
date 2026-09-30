@@ -1,7 +1,6 @@
 .git
 .github
 .idea
-target/*
-!target/iu-testshop-0.0.1-SNAPSHOT.jar
+target
 *.iml
 README.md
