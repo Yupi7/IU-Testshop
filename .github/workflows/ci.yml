@@ -103,10 +103,43 @@ jobs:
           path: target/*.jar
           if-no-files-found: error
 
+  staging-deploy:
+    name: Staging Deployment
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    environment:
+      name: staging
+      url: https://iu-testshop-staging.up.railway.app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Railway CLI
+        run: npm install --global @railway/cli
+
+      - name: Deploy current commit to Railway staging
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --service IU-Testshop --environment staging --ci
+
+      - name: Verify staging health
+        run: |
+          for i in {1..30}; do
+            if curl --fail --silent https://iu-testshop-staging.up.railway.app/actuator/health | grep '"status":"UP"'; then
+              echo "Railway staging is healthy."
+              exit 0
+            fi
+            echo "Waiting for Railway staging..."
+            sleep 10
+          done
+          echo "Railway staging did not become healthy."
+          exit 1
+
   e2e-tests:
     name: End-to-End Test
     runs-on: ubuntu-latest
-    needs: integration-tests
+    needs: staging-deploy
 
     steps:
       - name: Checkout repository
@@ -121,19 +154,6 @@ jobs:
 
       - name: Show Chrome version
         run: google-chrome --version
-
-      - name: Wait for Railway staging health
-        run: |
-          for i in {1..30}; do
-            if curl --fail --silent https://iu-testshop-staging.up.railway.app/actuator/health | grep '"status":"UP"'; then
-              echo "Railway staging is healthy."
-              exit 0
-            fi
-            echo "Waiting for Railway staging..."
-            sleep 10
-          done
-          echo "Railway staging did not become healthy."
-          exit 1
 
       - name: Run Selenium E2E test against Railway staging
         env:
